@@ -2,11 +2,11 @@ import { useState } from "react";
 import Router from "next/router";
 import useRequest from "../../hooks/use-request";
 
-export default function SignUp() {
+export default function SignIn() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const { doRequest, errors } = useRequest({
-    url: "/api/users/signup",
+    url: "/api/users/signin",
     method: "post",
     body: { email, password },
     onSuccess: () => Router.push("/"),
@@ -21,7 +21,7 @@ export default function SignUp() {
 
   return (
     <div className="container">
-      <h1>Sign Up</h1>
+      <h1>Sign In</h1>
       {errors}
       <form onSubmit={handleSubmit}>
         <div className="form-group">
@@ -47,7 +47,7 @@ export default function SignUp() {
           />
         </div>
         <button type="submit" className="btn btn-primary">
-          Sign Up
+          Sign In
         </button>
       </form>
     </div>
