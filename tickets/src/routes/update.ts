@@ -7,6 +7,8 @@ import {
 } from "@wmelotickets/common";
 import { Ticket } from "../models/ticket"; // Assuming you have a Ticket model
 import { body } from "express-validator";
+import { TicketUpdatedPublisher } from "../events/publishers/ticket-updated-publisher";
+import { natsWrapper } from "../nats-wrapper"; // Assuming you have a NATS
 
 const router = express.Router();
 
@@ -34,6 +36,14 @@ router.put(
 
     ticket.set({ title, price });
     await ticket.save();
+
+    // Publish the updated ticket event
+    new TicketUpdatedPublisher(natsWrapper.client).publish({
+      id: ticket.id,
+      title: ticket.title,
+      price: ticket.price,
+      userId: ticket.userId,
+    });
 
     res.send(ticket);
   }
