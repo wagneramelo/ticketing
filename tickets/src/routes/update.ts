@@ -4,6 +4,7 @@ import {
   validateRequest,
   NotAuthorizedError,
   NotFoundError,
+  BadRequestError,
 } from "@wmelotickets/common";
 import { Ticket } from "../models/ticket"; // Assuming you have a Ticket model
 import { body } from "express-validator";
@@ -30,6 +31,10 @@ router.put(
       throw new NotFoundError();
     }
 
+    if (ticket.orderId) {
+      throw new BadRequestError("Cannot edit a reserved ticket");
+    }
+
     if (ticket.userId !== req.currentUser!.id) {
       throw new NotAuthorizedError();
     }
@@ -41,6 +46,7 @@ router.put(
     new TicketUpdatedPublisher(natsWrapper.client).publish({
       id: ticket.id,
       title: ticket.title,
+      version: ticket.version, // Added version for optimistic concurrency control
       price: ticket.price,
       userId: ticket.userId,
     });

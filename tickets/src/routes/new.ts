@@ -33,6 +33,7 @@ router.post(
       id: ticket.id,
       title: ticket.title,
       price: ticket.price,
+      version: ticket.version, // Added version for optimistic concurrency control
       userId: ticket.userId,
     });
 
