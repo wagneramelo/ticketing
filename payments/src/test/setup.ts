@@ -14,7 +14,7 @@ beforeAll(async () => {
 });
 
 declare global {
-  var signin: () => string[];
+  var signin: (_? : string) => string[];
 }
 
 beforeEach(async () => {
@@ -35,9 +35,9 @@ afterAll(async () => {
   await mongoose.connection.close();
 });
 
-global.signin = () => {
+global.signin = (userId?: string) => {
   const payload = {
-    id: new mongoose.Types.ObjectId().toHexString(),
+    id: userId || new mongoose.Types.ObjectId().toHexString(),
     email: "test@test.com",
   };
 
