@@ -25,6 +25,16 @@ const AppComponent = ({ Component, pageProps, currentUser }) => {
         ) : (
           <ul className="nav">
             <li className="nav-item">
+              <Link className="nav-link" href="/tickets/new">
+                Sell Tickets
+              </Link>
+            </li>
+            <li className="nav-item">
+              <Link className="nav-link" href="/orders">
+                My Orders
+              </Link>
+            </li>
+            <li className="nav-item">
               <Link className="nav-link" href="/auth/signout">
                 Sign Out
               </Link>
@@ -32,7 +42,10 @@ const AppComponent = ({ Component, pageProps, currentUser }) => {
           </ul>
         )}
       </nav>
-      <Component {...pageProps} />
+      <div className="container">
+      <Component {...pageProps} currentUser={currentUser} />
+
+      </div>
     </div>
   );
 };
@@ -40,13 +53,14 @@ const AppComponent = ({ Component, pageProps, currentUser }) => {
 AppComponent.getInitialProps = async (appContext) => {
   const client = buildClient(appContext.ctx);
   const { data } = await client.get("/api/users/currentuser");
+  const currentUser = data.currentUser;
 
   let pageProps = {};
   if (appContext.Component.getInitialProps) {
-    pageProps = await appContext.Component.getInitialProps(appContext.ctx);
+    pageProps = await appContext.Component.getInitialProps(appContext.ctx, client, currentUser);
   }
 
-  return { pageProps, currentUser: data.currentUser };
+  return { pageProps, currentUser};
 };
 
 export default AppComponent;
